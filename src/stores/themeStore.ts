@@ -1,4 +1,4 @@
-import { create } from 'zustand'
+import { create } from 'zustand';
 
 export const themes = ['light', 'dark', 'cupcake', 'bumblebee', 'emerald', 'corporate'];
 
@@ -24,7 +24,7 @@ export const useThemeStore = create<ThemeState>((set) => ({
     // 다음 인덱스 계산 (마지막이면 다시 0으로)
     const nextIndex = (currentIndex + 1) % themes.length;
     setTheme(themes[nextIndex]);
-  }
+  },
 }));
 
 // 초기 실행 시 스토어 테마 적용

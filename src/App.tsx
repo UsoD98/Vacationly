@@ -1,22 +1,5 @@
-import '@/App.css'
-import '@/index.css'
-import {useThemeStore} from "@/store/themeStore.ts";
+import AppRouter from '@/routes/router.tsx';
 
-function App() {
-  const { theme, nextTheme } = useThemeStore();
-
-  return (
-    <>
-      {/* 테마 토글 버튼 */}
-      <div className="p-10 text-center">
-        <h1 className="text-4xl font-bold mb-4">테마: {theme}</h1>
-        <p className="py-4 text-base-content/80">
-          Tailwind v4와 daisyUI, Zustand로 구현한 테마입니다.
-        </p>
-        <button className="btn btn-accent"  onClick={nextTheme}>Toggle Button</button>
-      </div>
-    </>
-  )
+export default function App() {
+  return <AppRouter />;
 }
-
-export default App
