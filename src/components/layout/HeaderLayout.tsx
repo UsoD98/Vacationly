@@ -7,8 +7,8 @@ export const Header = () => {
   return (
     <div className={cn('navbar')}>
       <div className={cn('navbar-start', 'px-6')}>
-        <NavLink to="/Home" className={cn('font-bold', 'text-2xl')}>
-          경북 COCO
+        <NavLink to="/" className={cn('font-bold', 'text-2xl')}>
+          Main
         </NavLink>
       </div>
       <div className={cn('navbar-center')}>
