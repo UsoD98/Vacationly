@@ -8,7 +8,7 @@ export const Header = () => {
     <div className={cn('navbar')}>
       <div className={cn('navbar-start', 'px-6')}>
         <NavLink to="/" className={cn('font-bold', 'text-2xl')}>
-          Main
+          Vacationly
         </NavLink>
       </div>
       <div className={cn('navbar-center')}>
