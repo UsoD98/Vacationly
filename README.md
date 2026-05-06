@@ -71,3 +71,27 @@ export default defineConfig([
   },
 ])
 ```
+
+## Electron packaging
+
+Windows용 Electron 앱을 단일 `exe` 파일로 만들려면 아래 명령을 사용하세요.
+
+```bash
+npm run dev
+npm run dist:win
+```
+
+개발 서버 주소는 루트 `.env`의 `VITE_DEV_SERVER_URL=http://localhost:5173` 값을 사용합니다.
+
+업데이트 배포를 함께 쓰려면 빌드 전에 `VACATIONLY_UPDATE_URL` 환경 변수를 설정하세요.
+
+```bash
+# 예시
+set VACATIONLY_UPDATE_URL=https://your-domain.com/vacationly/updates/
+npm run dist:win:publish
+```
+
+생성된 포터블 exe는 `release/` 폴더에 저장됩니다.
+
+트레이 아이콘과 앱 아이콘은 `electron/assets/app.ico`를 사용합니다.
+

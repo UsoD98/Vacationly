@@ -14,6 +14,19 @@
 @theme {
     --font-sans: 'Pretendard', sans-serif;
     --font-serif: 'Pretendard', serif;
+
+    /*primary*/
+    --color-primary-50: #f0fdfa;
+    --color-primary-100: #ccfbf1;
+    --color-primary-200: #99f6e4;
+    --color-primary-300: #5eead4;
+    --color-primary-400: #2dd4bf;
+    --color-primary-500: #00695c;
+    --color-primary-600: #005349;
+    --color-primary-700: #004038;
+    --color-primary-800: #002d27;
+    --color-primary-900: #001a17;
+    --color-primary-950: #000d0b;
 }
 
 @layer base {

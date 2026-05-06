@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { Header } from '@/components/layout/HeaderLayout.tsx';
 import { Footer } from '@/components/layout/FooterLayout.tsx';
 import { cn } from '@/utils/cn.ts';
+import Sidebar from '@/components/common/Sidebar.tsx';
 
 export default function Layout() {
   return (
@@ -15,6 +16,7 @@ export default function Layout() {
         - lg:max-w-[1440px]: 피그마 기준 최대 너비 고정
         - mx-auto: 중앙 정렬
       */}
+      <Sidebar />
       <main
         className={cn(
           'flex-1' /*남은 공간을 모두 차지하여 메인 콘텐츠가 화면을 유연하게 채움*/,

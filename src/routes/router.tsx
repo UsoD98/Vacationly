@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createHashRouter, RouterProvider } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import Layout from '@/components/layout/Layout.tsx';
 import Loading from '@/components/common/Loading.tsx';
@@ -10,7 +10,7 @@ const Index = lazy(() => import('@/pages/Index'));
 const Home = lazy(() => import('@/pages/Home'));
 const About = lazy(() => import('@/pages/About'));
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: '/',
     element: <Layout />,
