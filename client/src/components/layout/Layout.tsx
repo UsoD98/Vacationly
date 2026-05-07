@@ -21,6 +21,7 @@ export default function Layout() {
         className={cn(
           'flex-1' /*남은 공간을 모두 차지하여 메인 콘텐츠가 화면을 유연하게 채움*/,
           'w-full' /*기본적으로 가로 전체 너비 사용*/,
+          'flex flex-col items-center justify-center' /*콘텐츠를 가로 중앙에 배치*/,
           'max-w-full' /*기본 최대 너비 제한 없음*/,
           'lg:max-w-360' /*데스크톱에서는 최대 너비 1440px로 제한*/,
           'min-w-90' /*최소 너비 360px로 설정하여 모바일에서도 레이아웃이 깨지지 않도록 함*/,
@@ -29,6 +30,7 @@ export default function Layout() {
           'px-4' /*모바일 환경에서 좌우 여백 16px*/,
           'lg:px-10' /*데스크톱 환경에서 좌우 여백 40px*/,
           'py-6' /*상하 여백 24px*/,
+          'h-full' /*높이 100%로 설정하여 Footer가 항상 하단에 위치하도록 함*/,
         )}
       >
         <Outlet />

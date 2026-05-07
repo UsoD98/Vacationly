@@ -9,7 +9,17 @@ export const Header = () => {
   const toggleSidebar = useSidebarStore((state) => state.toggleSidebar);
 
   return (
-    <div className={cn('navbar', 'bg-primary-500', 'text-white', 'px-4', 'sticky', 'top-0', 'z-50')}>
+    <div
+      className={cn(
+        'navbar',
+        'bg-primary-500',
+        'text-white',
+        'px-4',
+        'sticky',
+        'top-0',
+        'z-50',
+      )}
+    >
       <button
         onClick={toggleSidebar}
         className={cn(
@@ -27,7 +37,7 @@ export const Header = () => {
       </button>
       <div className={cn('navbar-start', 'px-6')}>
         <NavLink
-          to="about"
+          to="/about"
           className={cn('font-bold', 'text-2xl', 'flex', 'gap-2')}
         >
           <TicketsPlane className="my-auto" />
