@@ -16,7 +16,7 @@ export type UserInput = Omit<User, 'id' | 'created_at' | 'del_flag'>;
 
 // Axios 인스턴스 생성
 const api = axios.create({
-  baseURL: 'http://localhost:3000/api',
+  baseURL: import.meta.env.VITE_SERVER_URL,
   headers: {
     'Content-Type': 'application/json',
   },
