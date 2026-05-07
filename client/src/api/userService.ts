@@ -25,22 +25,22 @@ const api = axios.create({
 // User 관련 API 호출 모음
 export const userService = {
   getUsers: async (): Promise<User[]> => {
-    const { data } = await api.get('/users');
+    const { data } = await api.get('/api/users');
     return data.data || [];
   },
 
   createUser: async (userData: UserInput) => {
-    const { data } = await api.post('/users', userData);
+    const { data } = await api.post('/api/users', userData);
     return data;
   },
 
   updateUser: async ({ id, userData }: { id: number; userData: UserInput }) => {
-    const { data } = await api.put(`/users/${id}`, userData);
+    const { data } = await api.put(`/api/users/${id}`, userData);
     return data;
   },
 
   deleteUser: async (id: number) => {
-    const { data } = await api.delete(`/users/${id}`);
+    const { data } = await api.delete(`/api/users/${id}`);
     return data;
   },
 };
