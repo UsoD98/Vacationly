@@ -15,8 +15,14 @@ export interface User {
 export type UserInput = Omit<User, 'id' | 'created_at' | 'del_flag'>;
 
 // Axios 인스턴스 생성
+// VITE_SERVER_URL은 백엔드 "origin"만 넣는 것을 권장합니다.
+// 예: https://vacationly-tpki.onrender.com
+// 혹시 /api까지 들어와도 중복 호출(/api/api/...)이 되지 않도록 정규화합니다.
+const rawServerUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
+const apiBaseUrl = rawServerUrl.replace(/\/?api\/?$/, '').replace(/\/$/, '');
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_SERVER_URL,
+  baseURL: apiBaseUrl,
   headers: {
     'Content-Type': 'application/json',
   },
