@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // 미들웨어
-app.use(cors());
+app.use(cors(process.env.CLIENIT_URL));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
