@@ -27,7 +27,7 @@ export const Header = () => {
       </button>
       <div className={cn('navbar-start', 'px-6')}>
         <NavLink
-          to="/"
+          to="about"
           className={cn('font-bold', 'text-2xl', 'flex', 'gap-2')}
         >
           <TicketsPlane className="my-auto" />

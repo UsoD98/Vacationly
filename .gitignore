@@ -1,42 +1,96 @@
-# Dependencies
+# -----------------------------
+# Generic Node / JS
+# -----------------------------
 node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
+# -----------------------------
 # Build outputs
+# -----------------------------
+/dist/
+/build/
+/out/
+/public/build/
 dist/
-dist-ssr/
-coverage/
+build/
+out/
+client/dist/
+client/build/
+client/release/
+server/dist/
+
+# Electron packaged artifacts
+*.exe
+*.dll
+*.pdb
+*.app
+*.dmg
+*.AppImage
+*.msi
+*.7z
+*.zip
+*.tar.gz
+app.asar
+*.asar
+*.asar.unpacked
+release/
+release/**
+
+# -----------------------------
+# Tooling / caches
+# -----------------------------
+/.vite
+.vite/
+.cache/
+.cache
 *.tsbuildinfo
 
 # Logs
 logs/
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
-# Local environment files
-*.local
+# Environment / secrets
 .env
 .env.*
+.env.local
+.env.*.local
 
-# Editor / IDE files
-.vscode/*
-!.vscode/extensions.json
+# -----------------------------
+# IDEs / editors
+# -----------------------------
+.vscode/
 .idea/
-*.iml
-
-# OS files
-.DS_Store
-Thumbs.db
-Desktop.ini
-
-# Legacy / Visual Studio artifacts
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+*.swp
 
-release/
+# -----------------------------
+# OS files
+# -----------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# -----------------------------
+# Tests / coverage
+# -----------------------------
+coverage/
+.nyc_output/
+
+# -----------------------------
+# Misc
+# -----------------------------
+*.bak
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Keep lockfiles (package-lock.json / yarn.lock / pnpm-lock.yaml) tracked
+# End of .gitignore
