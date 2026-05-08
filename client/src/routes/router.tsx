@@ -4,6 +4,7 @@ import Layout from '@/components/layout/Layout.tsx';
 import Loading from '@/components/common/Loading.tsx';
 import NotFound from '@/components/layout/NotFoundLayout.tsx';
 import authRouter from '@/routes/authRouter.tsx';
+import { ProtectedRoute } from '@/routes/ProtectedRoute.tsx';
 
 const LoadingComponent = <Loading />;
 const Index = lazy(() => import('@/pages/Index'));
@@ -18,30 +19,36 @@ const router = createHashRouter([
       {
         errorElement: <NotFound />,
         children: [
-          {
-            index: true,
-            element: (
-              <Suspense fallback={LoadingComponent}>
-                <Index />
-              </Suspense>
-            ),
-          },
-          {
-            path: 'home',
-            element: (
-              <Suspense fallback={LoadingComponent}>
-                <Home />
-              </Suspense>
-            ),
-          },
-          {
-            path: 'about',
-            element: (
-              <Suspense fallback={LoadingComponent}>
-                <About />
-              </Suspense>
-            ),
-          },
+           {
+             index: true,
+             element: (
+               <ProtectedRoute>
+                 <Suspense fallback={LoadingComponent}>
+                   <Index />
+                 </Suspense>
+               </ProtectedRoute>
+             ),
+           },
+           {
+             path: 'home',
+             element: (
+               <ProtectedRoute>
+                 <Suspense fallback={LoadingComponent}>
+                   <Home />
+                 </Suspense>
+               </ProtectedRoute>
+             ),
+           },
+           {
+             path: 'about',
+             element: (
+               <ProtectedRoute>
+                 <Suspense fallback={LoadingComponent}>
+                   <About />
+                 </Suspense>
+               </ProtectedRoute>
+             ),
+           },
         ],
       },
     ],

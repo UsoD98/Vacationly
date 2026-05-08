@@ -1,9 +1,9 @@
-import { useState } from 'react';
 // React 19의 SubmitEventHandler와 ChangeEventHandler를 임포트합니다.
 import type { ChangeEventHandler, SubmitEventHandler } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { userService, type User, type UserInput } from '@/api/userService';
+import { userApi, type User, type UserInput } from '../api/user';
 
 export default function About() {
   const queryClient = useQueryClient();
@@ -29,7 +29,7 @@ export default function About() {
     refetch,
   } = useQuery({
     queryKey: ['users'],
-    queryFn: userService.getUsers,
+    queryFn: userApi.getUsers,
   });
 
   // 공통 초기화 로직
@@ -56,7 +56,7 @@ export default function About() {
 
   // [POST] 사용자 추가
   const createMutation = useMutation({
-    mutationFn: userService.createUser,
+    mutationFn: userApi.createUser,
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['users'] });
       resetFormAndSetSuccess('사용자가 성공적으로 추가되었습니다');
@@ -66,7 +66,7 @@ export default function About() {
 
   // [PUT] 사용자 수정
   const updateMutation = useMutation({
-    mutationFn: userService.updateUser,
+    mutationFn: userApi.updateUser,
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['users'] });
       resetFormAndSetSuccess('사용자가 성공적으로 수정되었습니다');
@@ -76,7 +76,7 @@ export default function About() {
 
   // [DELETE] 사용자 삭제
   const deleteMutation = useMutation({
-    mutationFn: userService.deleteUser,
+    mutationFn: userApi.deleteUser,
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['users'] });
       resetFormAndSetSuccess('사용자가 성공적으로 삭제되었습니다');
