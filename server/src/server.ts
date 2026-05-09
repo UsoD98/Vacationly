@@ -1,10 +1,9 @@
-import express, { Express, Request, Response, NextFunction } from 'express';
+import express, {Express, NextFunction, Request, Response} from 'express';
 import cors from 'cors';
 import 'dotenv/config';
-import pool from '@/config/dbConfig';
-import userRoutes from '@/routes/users';
+import userRoutes from './routes/user';
 import authRoutes from '@/routes/auth';
-import { ApiResponse } from '@/types';
+import {AppError} from '@/errors/AppError';
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -52,51 +51,41 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 
 // 라우트
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 
-// DB 연결 테스트 (디버깅용)
-// 사용 후 제거하거나 DEBUG_DB 환경변수로 제어하세요.
-app.get('/api/dbtest', async (req: Request, res: Response) => {
-  try {
-    const conn = await pool.getConnection();
-    const [rows] = await conn.query('SELECT 1 AS ok');
-    conn.release();
-    res.json({
-      success: true,
-      message: 'DB 연결 성공',
-      data: rows,
-    });
-  } catch (err) {
-    console.error('DB 연결 오류:', err);
-    const resp: any = {
-      success: false,
-      message: (err as Error).message,
-    };
-    if (process.env.DEBUG_DB === 'true' || process.env.NODE_ENV !== 'production') {
-      resp.error = (err as Error).stack;
-    }
-    res.status(500).json(resp);
-  }
-});
-
 // 헬스 체크 엔드포인트
 app.get('/api/health', (req: Request, res: Response) => {
-  res.json({ status: 'OK', message: 'Server is running' });
+  res.json({status: 'OK', message: 'Server is running'});
 });
 
 // 404 처리
 app.use((req: Request, res: Response) => {
-  res.status(404).json({ success: false, message: 'Route not found' });
+  res.status(404).json({success: false, message: 'Route not found'});
 });
 
-// 에러 처리
+// 전역 에러 처리 미들웨어
 app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ success: false, message: 'Internal server error' });
+  console.error('Error:', err);
+
+  // AppError 처리
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({
+      success: false,
+      message: err.message,
+      code: err.code,
+    });
+  }
+
+  // 예상치 못한 에러
+  res.status(500).json({
+    success: false,
+    message: 'Internal server error',
+    code: 'INTERNAL_SERVER_ERROR',
+  });
 });
 
 // 서버 시작

@@ -13,12 +13,12 @@ server/
 │   │   └── dbConfig.ts         # DB 설정
 │   ├── controllers/
 │   │   ├── AuthController.ts   # 인증 로직
-│   │   └── userController.ts   # 사용자 관리 로직
+│   │   └── userController2.ts   # 사용자 관리 로직
 │   ├── middleware/
 │   │   └── authMiddleware.ts   # 인증 미들웨어
 │   ├── routes/
 │   │   ├── auth.ts             # 인증 라우트
-│   │   └── users.ts            # 사용자 라우트
+│   │   └── users2.ts            # 사용자 라우트
 │   ├── types/
 │   │   ├── index.ts            # 일반 API 타입
 │   │   ├── auth.ts             # 인증 타입
