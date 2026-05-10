@@ -2,7 +2,7 @@
 
 ## 개요
 
-이 프로젝트는 클라이언트(React + Vite)와 서버(Express)가 모두 TypeScript로 작성되었으며, 
+이 프로젝트는 클라이언트(React + Vite)와 서버(Express)가 모두 TypeScript로 작성되었으며,
 절대 경로(`@/`) 설정이 적용되어 있습니다.
 
 ## 프로젝트 구조
@@ -74,6 +74,7 @@ import { User, LoginRequest } from '@/types/user';
 #### 1. 인증 타입 (`auth.ts`)
 
 **서버**: `server/src/types/auth.ts`
+
 ```typescript
 export interface LoginRequest {
   email: string;
@@ -88,6 +89,7 @@ export interface AuthResponse {
 ```
 
 **클라이언트**: `client/src/types/auth.ts`
+
 ```typescript
 export interface AuthRequest {
   email: string;
@@ -104,6 +106,7 @@ export interface AuthResponse {
 #### 2. 사용자 타입 (`user.ts`)
 
 **서버**: `server/src/types/user.ts`
+
 ```typescript
 export interface User {
   id: number;
@@ -121,6 +124,7 @@ export interface CreateUserRequest {
 ```
 
 **클라이언트**: `client/src/types/user.ts`
+
 ```typescript
 // 서버와 동일한 타입 정의
 ```
@@ -128,12 +132,12 @@ export interface CreateUserRequest {
 ### 타입 동기화 방법
 
 1. **서버에서 새 API 엔드포인트 추가**
-   - `server/src/types/`에 타입 정의 추가
-   - 컨트롤러 구현
+    - `server/src/types/`에 타입 정의 추가
+    - 컨트롤러 구현
 
 2. **클라이언트에서 동일한 타입 추가**
-   - `client/src/types/`에 서버와 동일한 타입 정의
-   - API 클라이언트 구현
+    - `client/src/types/`에 서버와 동일한 타입 정의
+    - API 클라이언트 구현
 
 3. **타입 재사용**
    ```typescript
@@ -200,11 +204,13 @@ import * as Types from '@/types';  // index.ts가 모든 것을 내보내야 함
 ### 2. 환경 변수
 
 **클라이언트**: `client/.env.local`
+
 ```
 VITE_API_BASE_URL=http://localhost:3000
 ```
 
 **서버**: `server/.env`
+
 ```
 JWT_SECRET=your-secret-key
 DB_HOST=localhost
@@ -229,6 +235,7 @@ const allowedOrigins = ['http://localhost:5173', 'https://yourdomain.com'];
 ### 예: 새로운 사용자 상태(Status) 엔드포인트
 
 **1단계: 서버 타입 정의**
+
 ```typescript
 // server/src/types/user.ts
 export interface UserStatus {
@@ -239,20 +246,23 @@ export interface UserStatus {
 ```
 
 **2단계: 서버 컨트롤러**
+
 ```typescript
-// server/src/controllers/userController.ts
+// server/src/controllers/userController2.ts
 export const getUserStatus = async (req: Request, res: Response): Promise<void> => {
   // ... 구현
 };
 ```
 
 **3단계: 서버 라우트**
+
 ```typescript
-// server/src/routes/users.ts
+// server/src/routes/users2.ts
 router.get('/:id/status', userController.getUserStatus);
 ```
 
 **4단계: 클라이언트 타입 추가**
+
 ```typescript
 // client/src/types/user.ts
 export interface UserStatus {
@@ -263,9 +273,10 @@ export interface UserStatus {
 ```
 
 **5단계: 클라이언트 API 클라이언트**
+
 ```typescript
 // client/src/api/user.ts
-import { UserStatus } from '@/types';
+import {UserStatus} from '@/types';
 
 export const getUserStatus = async (userId: number): Promise<UserStatus> => {
   const response = await axios.get(`/api/users/${userId}/status`);
@@ -276,11 +287,13 @@ export const getUserStatus = async (userId: number): Promise<UserStatus> => {
 ## 트러블슈팅
 
 ### 절대경로 인식 안 됨
+
 ```
 Cannot find module '@/...'
 ```
 
 **해결방법**:
+
 1. IDE 재시작
 2. TypeScript 컴파일러 업데이트: `npm install -D typescript@latest`
 3. VS Code에서 "Reload Window" 실행
@@ -288,6 +301,7 @@ Cannot find module '@/...'
 ### 타입 불일치 에러
 
 **해결방법**:
+
 1. 서버와 클라이언트 타입 정의 비교
 2. 단순 오타나 필드 누락 확인
 3. `npm run build`로 서버 컴파일 확인
@@ -295,6 +309,7 @@ Cannot find module '@/...'
 ### CORS 에러
 
 **해결방법**:
+
 1. `server/src/server.ts`의 `allowedOrigins` 확인
 2. 클라이언트 URL 확인: `http://localhost:5173`
 3. 쿠키 설정 확인 (HttpOnly, SameSite)

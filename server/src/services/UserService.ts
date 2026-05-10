@@ -58,6 +58,11 @@ export class UserService {
           await this.uow.rollback();
         }
 
+        // AppError
+        if (dbError instanceof AppError) {
+          throw dbError;
+        }
+
         // 기타 DB 에러
         throw AppError.internal('사용자 저장 중 오류 발생', 'USER_SAVE_FAILED');
       }

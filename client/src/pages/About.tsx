@@ -2,8 +2,9 @@
 import type { ChangeEventHandler, SubmitEventHandler } from 'react';
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
-import { userApi, type User, type UserInput } from '../api/user';
+import { userApi, type UserInput } from '../api/user';
+import type { User } from '@/types';
+import { getApiErrorMessage } from '@/utils/apiError';
 
 export default function About() {
   const queryClient = useQueryClient();
@@ -43,15 +44,7 @@ export default function About() {
 
   // 공통 에러 처리 로직
   const handleError = (err: unknown, defaultMessage: string) => {
-    if (err instanceof AxiosError) {
-      setFormError(
-        err.response?.data?.message || err.message || defaultMessage,
-      );
-    } else if (err instanceof Error) {
-      setFormError(err.message || defaultMessage);
-    } else {
-      setFormError(defaultMessage);
-    }
+    setFormError(getApiErrorMessage(err, defaultMessage));
   };
 
   // [POST] 사용자 추가

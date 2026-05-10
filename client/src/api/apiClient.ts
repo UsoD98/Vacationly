@@ -23,11 +23,15 @@ apiClient.interceptors.response.use(
   async (error) => {
     // Access Token 만료 시 Refresh Token으로 갱신 로직
     const requestUrl = String(error.config?.url || '');
-    const isAuthEndpoint = requestUrl.includes('/api/auth/login')
-      || requestUrl.includes('/api/auth/refresh')
-      || requestUrl.includes('/api/auth/logout');
-
-    if (error.response?.status === 401 && !isAuthEndpoint && !error.config?._retry) {
+    const isAuthEndpoint =
+      requestUrl.includes('/api/auth/login') ||
+      requestUrl.includes('/api/auth/refresh') ||
+      requestUrl.includes('/api/auth/logout');
+    if (
+      error.response?.status === 401 &&
+      !isAuthEndpoint &&
+      !error.config?._retry
+    ) {
       try {
         error.config._retry = true;
         const refreshResponse = await axios.post(

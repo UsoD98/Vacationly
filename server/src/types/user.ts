@@ -1,3 +1,5 @@
+import type { ApiResponse } from './api';
+
 export interface User {
   id: number;
   name: string;
@@ -22,9 +24,10 @@ export interface UpdateUserRequest {
   hire_date?: string;
 }
 
-export interface UserResponse {
-  success: boolean;
-  message?: string;
-  data?: User | User[];
-}
+export type UserResponse = ApiResponse<User | User[]>;
+
+export type GetUsersResponse = ApiResponse<User[]>;
+
+export type GetUserByIdResponse = ApiResponse<User>;
+
 

@@ -54,7 +54,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 // 라우트
-app.use('/api/users', userRoutes);
+app.use('/api/user', userRoutes);
 app.use('/api/auth', authRoutes);
 
 // 헬스 체크 엔드포인트

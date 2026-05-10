@@ -1,7 +1,7 @@
 import {Request, Response} from 'express';
 import {UserService} from "@/services/UserService";
-import {CreateUserRequest, User} from "@/types/user";
-import {getCurrentDateTime, isValidDate} from "@/utils/date";
+import {CreateUserRequest, User, UserResponse} from "@/types/user";
+import {getCurrentDateTime, isValidDate, setDateTime} from "@/utils/date";
 import {AppError} from "@/errors/AppError";
 import {isValidEmail} from "@/utils/email";
 
@@ -24,38 +24,41 @@ export class UserController {
         name: validatedData.name,
         email: validatedData.email,
         password: validatedData.password,
-        hire_date: validatedData.hire_date,
+        hire_date: setDateTime(validatedData.hire_date),
         created_at: getCurrentDateTime(),
         del_flag: 0,
       };
 
       const rst: boolean = await this.service.createUser(user);
       if (rst) {
-        res.status(201).json({
+        const response: UserResponse = {
           success: true,
           message: '회원가입에 성공했습니다',
-        });
+        };
+        res.status(201).json(response);
       } else {
         throw AppError.badRequest('사용자 저장에 실패했습니다.', 'USER_SAVE_FAILED');
       }
     } catch (error) {
       // AppError 처리
       if (error instanceof AppError) {
-        res.status(error.statusCode).json({
+        const response: UserResponse = {
           success: false,
           message: error.message,
           code: error.code,
-        });
+        };
+        res.status(error.statusCode).json(response);
         return;
       }
 
       // 예상치 못한 에러 처리
       const message = (error as Error).message || '회원가입 중 오류가 발생했습니다';
-      res.status(500).json({
+      const response: UserResponse = {
         success: false,
         message,
         code: 'INTERNAL_SERVER_ERROR',
-      });
+      };
+      res.status(500).json(response);
     }
   };
 

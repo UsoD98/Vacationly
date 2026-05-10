@@ -14,6 +14,18 @@ export const getCurrentDateTime = (): string => {
 };
 
 /**
+ * yyyy-MM-dd 형식으로 들어왔다면 yyyyMmdd 형식으로 반환
+ */
+export const setDateTime = (date: string): string => {
+  const dateObj = new Date(date);
+  const year = dateObj.getFullYear();
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const day = String(dateObj.getDate()).padStart(2, '0');
+
+  return `${year}${month}${day}`;
+}
+
+/**
  * 날짜 문자열 검증 (yyyy-MM-dd)
  * @param dateStr
  */

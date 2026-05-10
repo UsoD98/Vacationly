@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, TentTree } from 'lucide-react';
-import { authApi } from '@/api/auth';
-import { useAuthStore } from '@/stores/authStore';
-import type { AuthRequest, AuthResponse } from '@/types/auth';
+import React, {useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
+import {Eye, EyeOff, TentTree} from 'lucide-react';
+import {authApi} from '@/api/auth';
+import {useAuthStore} from '@/stores/authStore';
+import {useToastStore} from '@/stores/toastStore';
+import type {AuthRequest} from '@/types/auth';
+import {getApiErrorMessage} from '@/utils/apiError';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { addToast } = useToastStore();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
@@ -19,39 +21,48 @@ export default function Login() {
     event.preventDefault();
 
     try {
-      setError(null);
       setIsLoading(true);
 
       const payload: AuthRequest = { email, password };
-      const { accessToken, user }: AuthResponse = await authApi.login(payload);
+      const response = await authApi.login(payload);
 
-      if (!accessToken || !user) {
-        setError('서버 응답이 올바르지 않습니다.');
+      if (!response.success) {
+        addToast({
+          message: response.message || '로그인에 실패했습니다',
+          type: 'error',
+          duration: 3000,
+        });
         return;
       }
 
-      const authStore = useAuthStore.getState();
-      authStore.setAccessToken(accessToken);
-      authStore.setUser(user);
-
-      navigate('/home', { replace: true });
-    } catch (err) {
-      if (typeof err === 'object' && err !== null && 'response' in err) {
-        const axiosError = err as {
-          response?: { data?: { message?: string } };
-          message?: string;
-        };
-
-        setError(
-          axiosError.response?.data?.message ||
-            axiosError.message ||
-            '로그인 실패',
-        );
-      } else if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('로그인 실패');
+      if (!response.data?.accessToken || !response.data?.user) {
+        addToast({
+          message: '서버 응답이 올바르지 않습니다.',
+          type: 'error',
+          duration: 3000,
+        });
+        return;
       }
+
+      useAuthStore.getState().setSession(response.data.accessToken, response.data.user);
+
+      addToast({
+        message: `환영합니다, ${response.data.user.name}님!`,
+        type: 'success',
+        duration: 2000,
+      });
+
+      // Toast가 표시되는 동안 짧은 지연 후 이동
+      setTimeout(() => {
+        navigate('/home', { replace: true });
+      }, 300);
+    } catch (err) {
+      const errorMessage = getApiErrorMessage(err, '로그인 중 오류가 발생했습니다');
+      addToast({
+        message: errorMessage,
+        type: 'error',
+        duration: 3000,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -67,7 +78,6 @@ export default function Login() {
             Vacationly 서비스에 로그인하세요.
           </p>
         </div>
-
         <label className="label">이메일</label>
         <input
           type="email"
@@ -77,7 +87,6 @@ export default function Login() {
           onChange={(e) => setEmail(e.target.value)}
           className="input mb-4 w-full"
         />
-
         <label className="label">비밀번호</label>
         <div className="validator input flex items-center gap-2">
           <input
@@ -100,16 +109,22 @@ export default function Login() {
             )}
           </button>
         </div>
-
-        {error && <p className="mt-2 text-red-500">{error}</p>}
-
         <button
           type="submit"
           disabled={isLoading}
-          className="btn mt-4 bg-primary-500 text-primary-50"
+          className="btn mt-4 w-full bg-primary-500 text-primary-50"
         >
-          {isLoading ? '로그인 중...' : 'Login'}
+          {isLoading ? '로그인 중...' : '로그인'}
         </button>
+        <div className="mt-4 text-center text-sm text-secondary">
+          계정이 없으신가요?{' '}
+          <Link
+            to="/auth/register"
+            className="font-semibold text-slate-500 underline-offset-4 hover:underline"
+          >
+            회원가입
+          </Link>
+        </div>
       </fieldset>
     </form>
   );

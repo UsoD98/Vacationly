@@ -21,20 +21,3 @@ export interface UpdateUserRequest {
   password?: string;
   hire_date?: string;
 }
-
-export interface UserResponse {
-  success: boolean;
-  message?: string;
-  data?: User | User[];
-}
-
-export interface GetUsersResponse {
-  success: boolean;
-  data?: User[];
-}
-
-export interface GetUserByIdResponse {
-  success: boolean;
-  data?: User;
-}
-
