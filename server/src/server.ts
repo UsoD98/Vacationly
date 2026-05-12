@@ -1,9 +1,11 @@
 import express, {Express, NextFunction, Request, Response} from 'express';
-import cors from 'cors';
+import cors, {CorsOptions} from 'cors';
 import 'dotenv/config';
 import userRoutes from './routes/user';
 import authRoutes from '@/routes/auth';
+import vacationRoutes from '@/routes/vacation';
 import {AppError} from '@/errors/AppError';
+import {DbError} from '@/errors/DbError';
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -36,17 +38,18 @@ const normalizeOrigins = (value?: string): string[] => {
 
 const allowedOrigins = normalizeOrigins(process.env.ALLOWED_ORIGINS || process.env.CLIENT_URL);
 
-const corsOptions = {
-  origin(requestOrigin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
-    if (!requestOrigin || allowedOrigins.includes(requestOrigin)) {
-      return callback(null, true);
-    }
-
-    return callback(new Error(`CORS policy does not allow access from origin: ${requestOrigin}`));
-  },
+const corsOptions: CorsOptions = {
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+corsOptions.origin = (requestOrigin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+  if (!requestOrigin || allowedOrigins.includes(requestOrigin)) {
+    return callback(null, true);
+  }
+
+  return callback(new Error(`CORS policy does not allow access from origin: ${requestOrigin}`));
 };
 
 app.use(cors(corsOptions));
@@ -54,8 +57,9 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 // 라우트
-app.use('/api/user', userRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/vacation', vacationRoutes);
 
 // 헬스 체크 엔드포인트
 app.get('/api/health', (req: Request, res: Response) => {
@@ -74,6 +78,14 @@ app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
   // AppError 처리
   if (err instanceof AppError) {
     return res.status(err.statusCode).json({
+      success: false,
+      message: err.message,
+      code: err.code,
+    });
+  }
+
+  if (err instanceof DbError) {
+    return res.status(500).json({
       success: false,
       message: err.message,
       code: err.code,

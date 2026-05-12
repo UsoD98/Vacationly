@@ -90,6 +90,7 @@ export default function Register() {
         email: email.trim().toLowerCase(),
         password,
         hire_date,
+        vacation_available,
       });
 
       if (response.success) {

@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
-import {Link, useNavigate} from 'react-router-dom';
-import {Eye, EyeOff, TentTree} from 'lucide-react';
-import {authApi} from '@/api/auth';
-import {useAuthStore} from '@/stores/authStore';
-import {useToastStore} from '@/stores/toastStore';
-import type {AuthRequest} from '@/types/auth';
-import {getApiErrorMessage} from '@/utils/apiError';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, TentTree } from 'lucide-react';
+import { authApi } from '@/api/auth';
+import { useAuthStore } from '@/stores/authStore';
+import { useToastStore } from '@/stores/toastStore';
+import type { AuthRequest } from '@/types/auth';
+import { getApiErrorMessage } from '@/utils/apiError';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -44,7 +44,9 @@ export default function Login() {
         return;
       }
 
-      useAuthStore.getState().setSession(response.data.accessToken, response.data.user);
+      useAuthStore
+        .getState()
+        .setSession(response.data.accessToken, response.data.user);
 
       addToast({
         message: `환영합니다, ${response.data.user.name}님!`,
@@ -54,10 +56,13 @@ export default function Login() {
 
       // Toast가 표시되는 동안 짧은 지연 후 이동
       setTimeout(() => {
-        navigate('/home', { replace: true });
+        navigate('/', { replace: true });
       }, 300);
     } catch (err) {
-      const errorMessage = getApiErrorMessage(err, '로그인 중 오류가 발생했습니다');
+      const errorMessage = getApiErrorMessage(
+        err,
+        '로그인 중 오류가 발생했습니다',
+      );
       addToast({
         message: errorMessage,
         type: 'error',

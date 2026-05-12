@@ -1,13 +1,40 @@
 import {Request, Response} from 'express';
 import {UserService} from "@/services/UserService";
-import {CreateUserRequest, User, UserResponse} from "@/types/user";
-import {getCurrentDateTime, isValidDate, setDateTime} from "@/utils/date";
+import {GetUserByIdResponse, GetUsersResponse, UserResponse} from '@/types/user';
 import {AppError} from "@/errors/AppError";
-import {isValidEmail} from "@/utils/email";
 
 export class UserController {
   constructor(private readonly service: UserService) {
   }
+
+  getUsers = async (_req: Request, res: Response): Promise<void> => {
+    try {
+      const users = await this.service.getUsers();
+      const response: GetUsersResponse = {
+        success: true,
+        message: '사용자 목록 조회에 성공했습니다',
+        data: users,
+      };
+      res.status(200).json(response);
+    } catch (error) {
+      this.handleError(error, res, '사용자 목록 조회 중 오류가 발생했습니다');
+    }
+  };
+
+  getUserById = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const id = this.parseId(req.params.id);
+      const user = await this.service.getUserById(id);
+      const response: GetUserByIdResponse = {
+        success: true,
+        message: '사용자 조회에 성공했습니다',
+        data: user,
+      };
+      res.status(200).json(response);
+    } catch (error) {
+      this.handleError(error, res, '사용자 조회 중 오류가 발생했습니다');
+    }
+  };
 
   /**
    * 사용자 생성
@@ -16,20 +43,8 @@ export class UserController {
    */
   createUser = async (req: Request, res: Response): Promise<void> => {
     try {
-      // 입력 검증
-      const validatedData = this.validateCreateUserInput(req.body);
 
-      const user: User = {
-        id: 0,
-        name: validatedData.name,
-        email: validatedData.email,
-        password: validatedData.password,
-        hire_date: setDateTime(validatedData.hire_date),
-        created_at: getCurrentDateTime(),
-        del_flag: 0,
-      };
-
-      const rst: boolean = await this.service.createUser(user);
+      const rst: boolean = await this.service.createUser(req.body);
       if (rst) {
         const response: UserResponse = {
           success: true,
@@ -53,50 +68,74 @@ export class UserController {
 
       // 예상치 못한 에러 처리
       const message = (error as Error).message || '회원가입 중 오류가 발생했습니다';
-      const response: UserResponse = {
-        success: false,
-        message,
-        code: 'INTERNAL_SERVER_ERROR',
-      };
+      const response: UserResponse = {success: false, message, code: 'INTERNAL_SERVER_ERROR'};
       res.status(500).json(response);
     }
   };
 
-  private validateCreateUserInput(data: Partial<CreateUserRequest>): {
-    name: string;
-    email: string;
-    password: string;
-    hire_date: string
-  } {
-    const {name, email, password, hire_date} = data;
-
-    // 필수 필드 검증
-    if (!name || !email || !password || !hire_date) {
-      throw AppError.badRequest('필수 필드를 입력해주세요 (name, email, password, hire_date)', 'MISSING_REQUIRED_FIELDS');
+  updateUser = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const id = this.parseId(req.params.id);
+      const rst: boolean = await this.service.updateUser(id, req.body);
+      if (rst) {
+        const response: UserResponse = {
+          success: true,
+          message: '사용자 수정에 성공했습니다',
+        };
+        res.status(200).json(response);
+      } else {
+        throw AppError.badRequest('사용자 수정에 실패했습니다.', 'USER_UPDATE_FAILED');
+      }
+    } catch (error) {
+      this.handleError(error, res, '사용자 수정 중 오류가 발생했습니다');
     }
+  };
 
-    // 문자열 검증
-    if (typeof name !== 'string' || name.trim().length === 0) {
-      throw AppError.badRequest('이름은 빈 문자열일 수 없습니다', 'INVALID_NAME');
+  deleteUser = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const id = this.parseId(req.params.id);
+      const rst: boolean = await this.service.deleteUser(id);
+      if (rst) {
+        const response: UserResponse = {
+          success: true,
+          message: '사용자 삭제에 성공했습니다',
+        };
+        res.status(200).json(response);
+      } else {
+        throw AppError.badRequest('사용자 삭제에 실패했습니다.', 'USER_DELETE_FAILED');
+      }
+    } catch (error) {
+      this.handleError(error, res, '사용자 삭제 중 오류가 발생했습니다');
     }
+  };
 
-    if (typeof email !== 'string' || !isValidEmail(email)) {
-      throw AppError.badRequest('유효하지 않은 이메일 형식입니다', 'INVALID_EMAIL');
+  private parseId(idValue: string): number {
+    const id = Number.parseInt(idValue, 10);
+    if (!Number.isInteger(id) || id <= 0) {
+      throw AppError.badRequest('유효한 사용자 ID가 아닙니다.', 'INVALID_USER_ID');
     }
-
-    if (typeof password !== 'string' || password.length < 6) {
-      throw AppError.badRequest('비밀번호는 최소 6자 이상이어야 합니다', 'INVALID_PASSWORD');
-    }
-
-    if (typeof hire_date !== 'string' || !isValidDate(hire_date)) {
-      throw AppError.badRequest('유효하지 않은 날짜 형식입니다', 'INVALID_HIRE_DATE');
-    }
-
-    return {
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
-      password,
-      hire_date,
-    };
+    return id;
   }
+
+  private handleError(error: unknown, res: Response, fallbackMessage: string): void {
+    if (error instanceof AppError) {
+      const response: UserResponse = {
+        success: false,
+        message: error.message,
+        code: error.code,
+      };
+      res.status(error.statusCode).json(response);
+      return;
+    }
+
+    const message = error instanceof Error && error.message ? error.message : fallbackMessage;
+    const response: UserResponse = {
+      success: false,
+      message,
+      code: 'INTERNAL_SERVER_ERROR',
+    };
+    res.status(500).json(response);
+  }
+
+
 }

@@ -42,4 +42,3 @@ export const useToastStore = create<ToastStore>((set) => ({
     set({ toasts: [] });
   },
 }));
-

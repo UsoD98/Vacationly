@@ -8,8 +8,8 @@ import { ProtectedRoute } from '@/routes/ProtectedRoute.tsx';
 
 const LoadingComponent = <Loading />;
 const Index = lazy(() => import('@/pages/Index'));
-const Home = lazy(() => import('@/pages/Home'));
-const About = lazy(() => import('@/pages/About'));
+const VacationRegister = lazy(() => import('@/pages/Vacation/VacationRegister'));
+const VacationHistory = lazy(() => import('@/pages/Vacation/VacationHistory'));
 
 const router = createHashRouter([
   {
@@ -19,36 +19,36 @@ const router = createHashRouter([
       {
         errorElement: <NotFound />,
         children: [
-           {
-             index: true,
-             element: (
-               <ProtectedRoute>
-                 <Suspense fallback={LoadingComponent}>
-                   <Index />
-                 </Suspense>
-               </ProtectedRoute>
-             ),
-           },
-           {
-             path: 'home',
-             element: (
-               <ProtectedRoute>
-                 <Suspense fallback={LoadingComponent}>
-                   <Home />
-                 </Suspense>
-               </ProtectedRoute>
-             ),
-           },
-           {
-             path: 'about',
-             element: (
-               <ProtectedRoute>
-                 <Suspense fallback={LoadingComponent}>
-                   <About />
-                 </Suspense>
-               </ProtectedRoute>
-             ),
-           },
+          {
+            index: true,
+            element: (
+              <ProtectedRoute>
+                <Suspense fallback={LoadingComponent}>
+                  <Index />
+                </Suspense>
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: 'vacation/register',
+            element: (
+              <ProtectedRoute>
+                <Suspense fallback={LoadingComponent}>
+                  <VacationRegister />
+                </Suspense>
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: 'vacation/history',
+            element: (
+              <ProtectedRoute>
+                <Suspense fallback={LoadingComponent}>
+                  <VacationHistory />
+                </Suspense>
+              </ProtectedRoute>
+            ),
+          },
         ],
       },
     ],

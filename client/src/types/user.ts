@@ -6,6 +6,7 @@ export interface User {
   hire_date?: string;
   created_at?: string;
   del_flag?: number;
+  vacation_available?: number;
 }
 
 export interface CreateUserRequest {

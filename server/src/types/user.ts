@@ -8,6 +8,7 @@ export interface User {
   hire_date?: string;
   created_at?: string;
   del_flag?: number;
+  vacation_available?: number;
 }
 
 export interface CreateUserRequest {
@@ -15,6 +16,7 @@ export interface CreateUserRequest {
   email: string;
   password: string;
   hire_date: string;
+  vacation_available?: number;
 }
 
 export interface UpdateUserRequest {
@@ -22,6 +24,7 @@ export interface UpdateUserRequest {
   email?: string;
   password?: string;
   hire_date?: string;
+  vacation_available?: number;
 }
 
 export type UserResponse = ApiResponse<User | User[]>;
