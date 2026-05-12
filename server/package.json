@@ -14,14 +14,15 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "bcrypt": "^5.1.1",
+    "@mapbox/node-pre-gyp": "^2.0.3",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "date-fns": "^4.1.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.22.3",
-    "react-day-picker": "^10.0.0"
+    "tar": "^7.5.15"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
