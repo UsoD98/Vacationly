@@ -4,11 +4,12 @@ import Layout from '@/components/layout/Layout.tsx';
 import Loading from '@/components/common/Loading.tsx';
 import NotFound from '@/components/layout/NotFoundLayout.tsx';
 import authRouter from '@/routes/authRouter.tsx';
+import { ProtectedRoute } from '@/routes/ProtectedRoute.tsx';
 
 const LoadingComponent = <Loading />;
 const Index = lazy(() => import('@/pages/Index'));
-const Home = lazy(() => import('@/pages/Home'));
-const About = lazy(() => import('@/pages/About'));
+const VacationRegister = lazy(() => import('@/pages/Vacation/VacationRegister'));
+const VacationHistory = lazy(() => import('@/pages/Vacation/VacationHistory'));
 
 const router = createHashRouter([
   {
@@ -21,25 +22,31 @@ const router = createHashRouter([
           {
             index: true,
             element: (
-              <Suspense fallback={LoadingComponent}>
-                <Index />
-              </Suspense>
+              <ProtectedRoute>
+                <Suspense fallback={LoadingComponent}>
+                  <Index />
+                </Suspense>
+              </ProtectedRoute>
             ),
           },
           {
-            path: 'home',
+            path: 'vacation/register',
             element: (
-              <Suspense fallback={LoadingComponent}>
-                <Home />
-              </Suspense>
+              <ProtectedRoute>
+                <Suspense fallback={LoadingComponent}>
+                  <VacationRegister />
+                </Suspense>
+              </ProtectedRoute>
             ),
           },
           {
-            path: 'about',
+            path: 'vacation/history',
             element: (
-              <Suspense fallback={LoadingComponent}>
-                <About />
-              </Suspense>
+              <ProtectedRoute>
+                <Suspense fallback={LoadingComponent}>
+                  <VacationHistory />
+                </Suspense>
+              </ProtectedRoute>
             ),
           },
         ],

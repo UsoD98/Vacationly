@@ -1,6 +1,6 @@
-# Vacationly - MariaDB CRUD 통합 프로젝트
+# Vacationly - annual_leave 이식 기반 풀스택 프로젝트
 
-이 프로젝트는 Electron 프론트엔드와 Express 백엔드를 연동하여 MariaDB 기반의 사용자 관리 CRUD 시스템을 구현합니다.
+이 프로젝트는 원래 `.NET Blazor`로 작성된 `annual_leave` 도메인을 React + Electron 프론트엔드와 Express 백엔드 구조로 옮겨가고 있습니다. 현재는 사용자/연차 기본 CRUD를 기준으로 이식이 진행 중입니다.
 
 ## 🎯 빠른 시작
 
@@ -34,9 +34,9 @@ npm run dev
 # 또는 Electron 앱으로 실행: npm run electron
 ```
 
-### 4단계: About 페이지에서 CRUD 테스트
+### 4단계: 사용자 관리 페이지에서 CRUD 테스트
 
-- 브라우저에서 About 페이지로 이동
+- 브라우저에서 사용자 관리 페이지로 이동
 - 사용자 추가/수정/삭제 테스트
 
 ## 📁 프로젝트 구조
@@ -86,6 +86,7 @@ About.tsx 페이지에서:
 - ✅ **사용자 추가**: 폼으로 새 사용자 추가
 - ✅ **사용자 수정**: 목록에서 선택하여 정보 수정
 - ✅ **사용자 삭제**: 소프트 삭제로 사용자 제거
+- ✅ **연차 정보 연동**: 기본 연차 정보를 함께 조회/표시
 - ✅ **에러/성공 메시지**: 작업 결과 피드백
 - ✅ **검증**: 필수 필드 입력, 이메일 중복 검사
 
@@ -102,6 +103,8 @@ CREATE TABLE users (
     del_flag TINYINT NOT NULL DEFAULT 0 COMMENT '탈퇴여부 0:No/1:Yes'
 );
 ```
+
+연차 기본 정보는 `vacation`, `vacation_extra`, `vacation_requests` 테이블에서 관리합니다.
 
 ## 🛠️ 기술 스택
 
@@ -127,11 +130,11 @@ DB_CHARSET=utf8mb4
 
 | 파일 | 설명 |
 |------|------|
-| `About.tsx` | React 상태 관리 및 CRUD UI 렌더링 |
-| `userController.js` | Create, Read, Update, Delete 로직 구현 |
-| `users.js` | RESTful API 라우트 정의 |
-| `dbConfig.js` | MariaDB 연결 풀 설정 |
-| `server.js` | Express 앱 초기화 및 미들웨어 설정 |
+| `About.tsx` | React 상태 관리 및 사용자/연차 CRUD UI 렌더링 |
+| `UserController.ts` | Create, Read, Update, Delete 로직 구현 |
+| `user.ts` | RESTful API 라우트 정의 |
+| `dbConfig.ts` | MariaDB 연결 풀 설정 |
+| `server.ts` | Express 앱 초기화 및 미들웨어 설정 |
 
 ## 🧪 테스트 시나리오
 
@@ -140,6 +143,20 @@ DB_CHARSET=utf8mb4
 3. 목록에서 사용자 정보 확인
 4. 사용자 정보 수정
 5. 사용자 삭제
+
+## 🔄 annual_leave 이식 현황
+
+### 이미 맞춰진 영역
+- 사용자 등록/조회/수정/삭제의 기본 CRUD
+- 연차 기본값 저장(`vacation` 테이블)
+- React + Electron + Express + MariaDB 구조
+- 공통 에러 응답 포맷
+
+### 다음으로 옮기면 좋은 영역
+- Blazor의 화면 단위(페이지/컴포넌트) 재구성
+- 연차 사용/이월/보정 흐름의 상세 UI
+- 승인/반려 같은 업무 흐름이 있으면 해당 상태값 반영
+- 공통 코드(검증/포맷/권한)를 서비스 계층으로 더 분리
 
 ## ⚙️ 문제 해결
 

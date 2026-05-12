@@ -1,4 +1,6 @@
 import { useSidebarStore } from '@/stores/sidebarStore.ts';
+import { Link } from 'react-router-dom';
+import { Calendar, LayoutDashboard } from 'lucide-react';
 
 const Sidebar = () => {
   // Store에서 상태와 상태 변경 함수 가져오기
@@ -23,12 +25,30 @@ const Sidebar = () => {
           className="drawer-overlay top-16! h-[calc(100vh-4rem)]!"
         ></label>
         <ul className="menu min-h-full w-80 bg-base-200 p-4">
-          {/* Sidebar content here */}
+          {/* 대시보드 */}
           <li>
-            <a>대시보드</a>
+            <Link to="/" className="flex items-center gap-2">
+              <LayoutDashboard size={18} />
+              대시보드
+            </Link>
           </li>
+
+          {/* 휴가 - 확장 가능한 메뉴 */}
           <li>
-            <a>휴가</a>
+            <details>
+              <summary className="flex items-center gap-2">
+                <Calendar size={18} />
+                휴가
+              </summary>
+              <ul>
+                <li>
+                  <Link to="/vacation/register">휴가 신청</Link>
+                </li>
+                <li>
+                  <Link to="/vacation/history">사용 내역</Link>
+                </li>
+              </ul>
+            </details>
           </li>
         </ul>
       </div>
