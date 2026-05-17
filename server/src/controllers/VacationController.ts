@@ -1,7 +1,7 @@
 import {Request, Response} from 'express';
 import {VacationService} from "@/services/VacationService";
 import {AppError} from "@/errors/AppError";
-import {getCurrentDateTime} from "@/utils/date";
+import {getCurrentDateTime, setDateTime} from "@/utils/date";
 import {UnitOfWork} from "@/uow/UnifOrWork";
 import type {VacationSummary} from "@/types/vacation";
 
@@ -175,6 +175,30 @@ export class VacationController {
         return;
       }
 
+      const normalizedStartDate = setDateTime(start_date);
+      const normalizedEndDate = setDateTime(end_date);
+
+      if (
+        !/^\d{12}$/.test(normalizedStartDate) ||
+        !/^\d{12}$/.test(normalizedEndDate)
+      ) {
+        res.status(400).json({
+          success: false,
+          message: '유효한 날짜/시간 형식을 입력해주세요.',
+          code: 'INVALID_DATE_FORMAT',
+        });
+        return;
+      }
+
+      if (normalizedEndDate < normalizedStartDate) {
+        res.status(400).json({
+          success: false,
+          message: '종료일시는 시작일시보다 빠를 수 없습니다.',
+          code: 'INVALID_DATE_RANGE',
+        });
+        return;
+      }
+
       if (typeof used_days !== 'number' || used_days <= 0) {
         res.status(400).json({
           success: false,
@@ -186,8 +210,8 @@ export class VacationController {
 
       const requestId = await this.service.requestVacation({
         user_id: userId,
-        start_date,
-        end_date,
+        start_date: normalizedStartDate,
+        end_date: normalizedEndDate,
         used_days,
         reason,
         created_at: getCurrentDateTime(),

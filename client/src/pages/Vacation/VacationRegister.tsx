@@ -4,6 +4,7 @@ import { CalendarRange, Info, Palmtree, Send, TentTree } from 'lucide-react';
 import { vacationApi } from '@/api/vacation';
 import { useToastStore } from '@/stores/toastStore';
 import { getApiErrorMessage } from '@/utils/apiError';
+import { setDateTime } from '@/utils/date';
 
 const toDateInputValue = (date: Date) => {
   const local = new Date(date);
@@ -43,6 +44,18 @@ const VACATION_TYPE_OPTIONS: Array<{
   { value: 'am', label: '☀️ 오전 반차', description: '0.5일 차감' },
   { value: 'pm', label: '🌙 오후 반차', description: '0.5일 차감' },
 ];
+
+const getVacationTimeRange = (type: VacationType): { startTime: string; endTime: string } => {
+  if (type === 'am') {
+    return { startTime: '0900', endTime: '1330' };
+  }
+
+  if (type === 'pm') {
+    return { startTime: '1330', endTime: '1800' };
+  }
+
+  return { startTime: '0900', endTime: '1800' };
+};
 
 export default function VacationRegister() {
   const navigate = useNavigate();
@@ -178,9 +191,29 @@ export default function VacationRegister() {
     try {
       setIsSubmitting(true);
 
+      const { startTime, endTime } = getVacationTimeRange(vacationType);
+      const normalizedStartDate = setDateTime(startDate);
+      const normalizedEndDate = setDateTime(endDate);
+      const requestStartDate = normalizedStartDate ? `${normalizedStartDate}${startTime}` : '';
+      const requestEndDate = normalizedEndDate ? `${normalizedEndDate}${endTime}` : '';
+
+      if (
+        !requestStartDate ||
+        !requestEndDate ||
+        requestStartDate.length !== 12 ||
+        requestEndDate.length !== 12
+      ) {
+        addToast({
+          message: '날짜 형식이 올바르지 않습니다.',
+          type: 'error',
+          duration: 3000,
+        });
+        return;
+      }
+
       const response = await vacationApi.requestVacation({
-        start_date: startDate,
-        end_date: endDate,
+        start_date: requestStartDate,
+        end_date: requestEndDate,
         used_days: calculatedDays,
         reason: reason.trim(),
       });
@@ -212,42 +245,42 @@ export default function VacationRegister() {
     }
   };
 
+  const remainingVacationLabel = isLoadingRemaining
+    ? '확인 중'
+    : remainingVacation === null
+      ? '조회 실패'
+      : `${remainingVacation.toFixed(1)} 일`;
+
   return (
-    <section className="w-full max-w-3xl py-2 md:py-6">
-      <div className="mb-6 text-center">
-        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+    <section className="w-full max-w-5xl px-4 py-4 sm:px-6 lg:px-8 lg:py-6">
+      <div className="mb-6 rounded-2xl border border-base-300 bg-base-100 px-4 py-6 text-center shadow-sm sm:px-6 lg:px-8 lg:py-8">
+        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary sm:h-16 sm:w-16">
           <TentTree size={30} />
         </div>
-        <h1 className="text-2xl font-bold md:text-3xl">휴가 신청</h1>
-        <p className="mt-2 text-sm text-base-content/70 md:text-base">
+        <h1 className="text-2xl font-bold sm:text-3xl">휴가 신청</h1>
+        <p className="mx-auto mt-2 max-w-2xl text-sm text-base-content/70 sm:text-base">
           열심히 일한 당신, 이제 쉬어갈 시간입니다.
         </p>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <fieldset className="fieldset rounded-box border border-base-300 bg-base-100 p-6 shadow-2xl md:p-8">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <fieldset className="fieldset rounded-2xl border border-base-300 bg-base-100 p-4 shadow-2xl sm:p-6 lg:p-8">
+          <div className="mb-5 flex flex-col gap-3 rounded-xl bg-base-200/50 p-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="badge gap-2 badge-outline px-4 py-3 badge-primary">
               <Info size={16} />
               남은 휴가
             </div>
-            <div className="flex items-center gap-2 text-sm text-base-content/70">
+            <div className="flex items-center gap-2 text-sm text-base-content/70 sm:justify-end">
               {isLoadingRemaining ? (
                 <span className="loading loading-xs loading-spinner text-primary" />
               ) : (
                 <Palmtree size={16} className="text-primary" />
               )}
-              <strong className="text-base-content">
-                {isLoadingRemaining
-                  ? '확인 중'
-                  : remainingVacation === null
-                    ? '조회 실패'
-                    : `${remainingVacation.toFixed(1)} 일`}
-              </strong>
+              <strong className="text-base-content">{remainingVacationLabel}</strong>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <label className="form-control w-full">
               <div className="label">
                 <span className="label-text font-semibold">시작일</span>
@@ -295,7 +328,7 @@ export default function VacationRegister() {
             </label>
           </div>
 
-          <label className="form-control mt-4 w-full">
+          <label className="form-control mt-5 w-full">
             <div className="label">
               <span className="label-text font-semibold">휴가 유형</span>
             </div>
@@ -312,7 +345,7 @@ export default function VacationRegister() {
             </select>
           </label>
 
-          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-[1.2fr_0.8fr]">
+          <div className="mt-5 grid grid-cols-1 gap-4 xl:grid-cols-[1.2fr_0.8fr] xl:gap-6">
             <label className="form-control w-full">
               <div className="label">
                 <span className="label-text font-semibold">신청 사유</span>
@@ -320,21 +353,21 @@ export default function VacationRegister() {
               <textarea
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                className="textarea-bordered textarea min-h-28 w-full"
+                className="textarea-bordered textarea min-h-32 w-full"
                 placeholder="예: 개인 일정, 가족 행사, 병원 진료 등"
                 required
               />
             </label>
 
-            <div className="rounded-box border border-base-300 bg-base-200/60 p-4">
+            <div className="rounded-2xl border border-base-300 bg-base-200/60 p-4 sm:p-5">
               <div className="mb-3 text-sm font-semibold text-base-content/70">
                 차감 예상 일수
               </div>
               <div className="flex items-end gap-2">
-                <span className="text-4xl font-extrabold text-primary">
+                <span className="text-4xl font-extrabold text-primary sm:text-5xl">
                   {calculatedDays.toFixed(1)}
                 </span>
-                <span className="pb-1 text-lg text-base-content/70">일</span>
+                <span className="pb-1 text-lg text-base-content/70 sm:text-xl">일</span>
               </div>
               <p className="mt-3 text-sm text-base-content/60">
                 {isHalfDay
@@ -358,18 +391,18 @@ export default function VacationRegister() {
             </div>
           )}
 
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
             <button
               type="button"
               onClick={() => navigate('/vacation/history')}
-              className="btn flex-1 btn-ghost"
+              className="btn w-full sm:w-auto sm:min-w-32 btn-ghost"
             >
               취소
             </button>
             <button
               type="submit"
               disabled={!canSubmit}
-              className="btn flex-1 gap-2 btn-primary"
+              className="btn w-full gap-2 sm:w-auto sm:min-w-40 btn-primary"
             >
               {isSubmitting ? (
                 <>
