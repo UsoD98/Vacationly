@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Vacationly favicon">
+  <defs>
+    <linearGradient id="bg" x1="10" y1="8" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="34" y1="32" x2="54" y2="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#86efac"/>
+      <stop offset="1" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#bg)"/>
+  <rect x="14" y="16" width="36" height="30" rx="8" fill="#ffffff" fill-opacity="0.96"/>
+  <rect x="14" y="16" width="36" height="9" rx="8" fill="#ede9fe"/>
+  <rect x="20" y="12" width="4" height="10" rx="2" fill="#4c1d95"/>
+  <rect x="40" y="12" width="4" height="10" rx="2" fill="#4c1d95"/>
+  <circle cx="23" cy="33" r="2.5" fill="#c4b5fd"/>
+  <circle cx="31" cy="33" r="2.5" fill="#c4b5fd"/>
+  <circle cx="39" cy="33" r="2.5" fill="#c4b5fd"/>
+  <path d="M25 41c3.2-7.5 8.7-12.1 18-13.8-2.6 1.8-4.5 4.6-5.4 8 2.2-1.4 4.8-2.1 7.8-2.1-5.6 2.3-9.5 6.3-11.7 11.9-2.2-2.8-5-4-8.7-4z" fill="url(#leaf)"/>
+  <circle cx="47" cy="17" r="4" fill="#fbbf24"/>
+  <path d="M47 11.5v2.1M47 20.4v2.1M41.5 17h2.1M50.4 17h2.1M43.1 13.1l1.5 1.5M49.4 19.4l1.5 1.5M50.9 13.1l-1.5 1.5M44.6 19.4l-1.5 1.5" stroke="#fde68a" stroke-width="1.6" stroke-linecap="round"/>
+</svg>
+
