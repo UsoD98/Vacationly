@@ -1,18 +1,3 @@
-/**
- * 현재시각(yyyyMMddHHmmss)
- */
-export const getCurrentDateTime = (): string => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  const hour = String(now.getHours()).padStart(2, '0');
-  const minute = String(now.getMinutes()).padStart(2, '0');
-  const second = String(now.getSeconds()).padStart(2, '0');
-
-  return `${year}${month}${day}${hour}${minute}${second}`;
-};
-
 const DASHED_DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const COMPACT_DATE_REGEX = /^\d{8}$/;
 const COMPACT_DATE_TIME_REGEX = /^\d{12}$/;
@@ -61,25 +46,4 @@ export const setDateTime = (date: string, time?: string): string => {
   const day = String(dateObj.getDate()).padStart(2, '0');
 
   return appendTime(`${year}${month}${day}`);
-};
-
-/**
- * 날짜 문자열 검증 (yyyy-MM-dd)
- * @param dateStr
- */
-export const isValidDate = (dateStr: string): boolean => {
-  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-  if (!dateRegex.test(dateStr)) return false;
-
-  const [yearStr, monthStr, dayStr] = dateStr.split('-');
-  const year = Number(yearStr);
-  const month = Number(monthStr);
-  const day = Number(dayStr);
-  const date = new Date(year, month - 1, day);
-
-  return (
-    date.getFullYear() === year &&
-    date.getMonth() === month - 1 &&
-    date.getDate() === day
-  );
 };
